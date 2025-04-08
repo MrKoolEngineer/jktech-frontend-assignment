@@ -1,4 +1,3 @@
-// app/forgot-password/page.tsx
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -29,7 +28,7 @@ export default function ForgotPasswordPage() {
         <InputField
           id="email"
           label="Email"
-          type="email"
+          type="text"
           error={errors.email?.message}
           {...register('email')}
         />

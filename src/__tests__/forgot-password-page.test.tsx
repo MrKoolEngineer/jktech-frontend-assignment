@@ -23,11 +23,11 @@ describe('Forgot Password Page - Validation', () => {
       </AuthProvider>
     );
 
-    const submitButton = screen.getByRole('button', { name: /send reset link/i });
+    const submitButton = screen.getByRole('button', { name: /reset password/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
     });
   });
 
@@ -42,11 +42,11 @@ describe('Forgot Password Page - Validation', () => {
       target: { value: 'not-an-email' },
     });
 
-    const submitButton = screen.getByRole('button', { name: /send reset link/i });
+    const submitButton = screen.getByRole('button', { name: /reset password/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/invalid email address/i)).toBeInTheDocument();
+      expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
     });
   });
 });
