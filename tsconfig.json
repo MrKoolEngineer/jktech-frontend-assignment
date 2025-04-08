@@ -21,9 +21,10 @@
     "paths": {
       "@components/*": ["./src/components/*"],
       "@constants/*": ["./src/constants/*"],
+      "@context/*": ["./src/context/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@mocks/*": ["./src/mocks/*"],
-      "@pages/*": ["./src/pages/*"],
+      "@schemas/*": ["./src/schemas/*"],
       "@services/*": ["./src/services/*"],
       "@store/*": ["./src/store/*"],
       "@styles/*": ["./src/styles/*"],

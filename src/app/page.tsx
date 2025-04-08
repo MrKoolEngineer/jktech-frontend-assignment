@@ -1,3 +1,13 @@
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function Home() {
-  return <h1 className="text-3xl font-bold text-red-700 underline">Hello Duniya!</h1>;
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/login');
+  }, [router]);
+
+  return null; // or a loading spinner
 }
