@@ -49,4 +49,23 @@ describe('Forgot Password Page - Validation', () => {
       expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
     });
   });
+
+  it('should show error if email exceeds max length of 255 characters', async () => {
+    render(
+      <AuthProvider>
+        <ForgotPasswordPage />
+      </AuthProvider>
+    );
+
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'a'.repeat(255) + '@test.com' },
+    });
+
+    const submitButton = screen.getByRole('button', { name: /reset password/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Email must be under 255 characters/i)).toBeInTheDocument();
+    });
+  });
 });
