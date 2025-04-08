@@ -29,7 +29,7 @@ export default function LoginPage() {
         <InputField
           id="email"
           label="Email"
-          type="email"
+          type="text"
           {...register('email')}
           error={errors.email?.message}
         />
