@@ -35,7 +35,7 @@ export default function SignupPage() {
         <InputField
           id="email"
           label="Email"
-          type="email"
+          type="text"
           error={errors.email?.message}
           {...register('email')}
         />
