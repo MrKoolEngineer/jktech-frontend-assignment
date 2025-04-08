@@ -15,6 +15,8 @@ describe('Signup Page', () => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
+    expect(screen.getByText(/already have an account/i)).toBeInTheDocument();
   });
 });
 
@@ -141,5 +143,37 @@ describe('Signup Page - Validation', () => {
     fireEvent.input(screen.getByLabelText(/confirm password/i), {
       target: { value: 'password123' },
     });
+  });
+
+  it('submits form with valid data', async () => {
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    render(<SignupPage />);
+
+    fireEvent.input(screen.getByLabelText(/name/i), {
+      target: { value: 'Kool Engineer' },
+    });
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.input(screen.getByLabelText(/^password$/i), {
+      target: { value: 'Password123' },
+    });
+    fireEvent.input(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'Password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(consoleLogSpy).toHaveBeenCalledWith('Signup Data:', {
+        name: 'Kool Engineer',
+        email: 'test@example.com',
+        password: 'Password123',
+        confirmPassword: 'Password123',
+      });
+    });
+
+    consoleLogSpy.mockRestore();
   });
 });
