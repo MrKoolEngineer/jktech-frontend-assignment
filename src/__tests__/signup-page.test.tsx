@@ -30,10 +30,32 @@ describe('Signup Page - Validation', () => {
     fireEvent.click(signupButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/email is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/password is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/confirm password is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/Name is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
+      expect(screen.getByText(/Password must be at least 6 characters/i)).toBeInTheDocument();
+      expect(screen.getByText(/Please confirm your password/i)).toBeInTheDocument();
+    });
+  });
+
+  it('should show password mismatch error', async () => {
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.input(screen.getByLabelText(/name/i), { target: { value: 'Test User' } });
+    fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+    fireEvent.input(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } });
+    fireEvent.input(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password321' },
+    });
+
+    const signupButton = screen.getByRole('button', { name: /sign up/i });
+    fireEvent.click(signupButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
     });
   });
 });

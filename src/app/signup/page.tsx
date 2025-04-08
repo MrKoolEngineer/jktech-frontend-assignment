@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import AuthLayout from '@components/layouts/AuthLayout';
 import InputField from '@components/ui/InputField';
 import Button from '@components/ui/Button';
