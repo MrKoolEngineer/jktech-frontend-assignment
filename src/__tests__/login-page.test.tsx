@@ -39,7 +39,7 @@ describe('Login Page', () => {
     const loginButton = screen.getByRole('button', { name: /log in/i });
 
     fireEvent.change(emailInput, {
-      target: { value: 'a'.repeat(246) + '@test.com' },
+      target: { value: 'a'.repeat(255) + '@test.com' },
     });
     fireEvent.change(passwordInput, { target: { value: 'validPass123' } });
     fireEvent.click(loginButton);
