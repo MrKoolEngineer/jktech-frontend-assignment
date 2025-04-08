@@ -58,4 +58,34 @@ describe('Signup Page - Validation', () => {
       expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
     });
   });
+
+  it('should show error if name exceeds max length', async () => {
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.input(screen.getByLabelText(/name/i), {
+      target: { value: 'A'.repeat(55) },
+    });
+
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/^password$/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/name must not exceed 50 characters/i)).toBeInTheDocument();
+    });
+  });
 });
