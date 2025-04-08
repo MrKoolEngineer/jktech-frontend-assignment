@@ -68,4 +68,28 @@ describe('Forgot Password Page - Validation', () => {
       expect(screen.getByText(/Email must be under 255 characters/i)).toBeInTheDocument();
     });
   });
+
+  it('submits the form and logs the email', async () => {
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    render(
+      <AuthProvider>
+        <ForgotPasswordPage />
+      </AuthProvider>
+    );
+
+    const emailInput = screen.getByLabelText(/email/i);
+    const submitButton = screen.getByRole('button', { name: /reset password/i });
+
+    fireEvent.input(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(consoleLogSpy).toHaveBeenCalledWith('Forgot Password Request:', {
+        email: 'test@example.com',
+      });
+    });
+
+    consoleLogSpy.mockRestore();
+  });
 });
