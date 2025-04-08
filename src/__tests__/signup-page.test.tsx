@@ -118,4 +118,28 @@ describe('Signup Page - Validation', () => {
       expect(screen.getByText(/email must be under 255 characters/i)).toBeInTheDocument();
     });
   });
+
+  it('should show error if password exceeds max length of 128 characters', async () => {
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.input(screen.getByLabelText(/name/i), {
+      target: { value: 'Test User' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/^password$/i), {
+      target: { value: 'a'.repeat(129) },
+    });
+
+    fireEvent.input(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+  });
 });
