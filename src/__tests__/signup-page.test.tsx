@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, getByLabelText } from '@testing-library/react';
 import SignupPage from '../app/signup/page';
 import { AuthProvider } from '@context/AuthContext';
 import '@testing-library/jest-dom';
@@ -59,7 +59,7 @@ describe('Signup Page - Validation', () => {
     });
   });
 
-  it('should show error if name exceeds max length', async () => {
+  it('should show error if name exceeds max length of 50 characters', async () => {
     render(
       <AuthProvider>
         <SignupPage />
@@ -86,6 +86,36 @@ describe('Signup Page - Validation', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/name must not exceed 50 characters/i)).toBeInTheDocument();
+    });
+  });
+
+  it('should show error if email exceeds max length of 255 characters', async () => {
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.input(screen.getByLabelText(/name/i), {
+      target: { value: 'Test User' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'a'.repeat(255) + '@test.com' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/^password$/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/email must be under 255 characters/i)).toBeInTheDocument();
     });
   });
 });
