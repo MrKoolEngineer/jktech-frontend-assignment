@@ -15,16 +15,16 @@ const DashboardHeader = () => {
 
   return (
     user?.username && (
-      <div className="p-5">
+      <div className="bg-gray-900 p-5">
         <div className="flex items-baseline justify-between space-y-4">
-          <h1 className="text-xl font-bold">
+          <h1 className="text-xl font-bold text-white">
             Welcome <br /> {user?.username}!
           </h1>
           <Button type="button" onClick={handleLogout}>
             Logout
           </Button>
         </div>
-        <p className="text-sm text-gray-600">This is your dashboard.</p>
+        <p className="text-sm text-white">This is your dashboard.</p>
       </div>
     )
   );

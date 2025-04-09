@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Spinner from '@components/ui/Spinner';
 import DashboardHeader from '@components/ui/DashboardHeader';
+import AdminControls from '@components/ui/AdminControls';
 import { useAuth } from '@context/AuthContext';
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
   return (
     <>
       <DashboardHeader />
+      <AdminControls />
     </>
   );
 }
