@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo "🔍 Running lint check..."
+npm run lint || {
+  echo "❌ Linting failed. Fix the issues before pushing.";
+  exit 1;
+}
+
+echo "🎨 Running Prettier..."
+npm run format || {
+  echo "❌ Prettier failed. Please fix formatting issues.";
+  exit 1;
+}
+
+echo "🧪 Running unit tests..."
+npm run test || {
+  echo "❌ Tests failed. Please fix them before pushing.";
+  exit 1;
+}
+
+echo "✅ All checks passed. Ready to push!"
