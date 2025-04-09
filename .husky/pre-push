@@ -1,23 +1,21 @@
 #!/bin/sh
 
-# Get staged files
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|ts|tsx)$')
-
-if [ -z "$STAGED_FILES" ]; then
-  echo "✅ No relevant staged files. Skipping lint and tests."
-  exit 0
-fi
-
-echo "🔍 Running lint on staged files..."
-npx eslint $STAGED_FILES || {
-  echo "❌ Lint failed. Please fix errors before pushing.";
+echo "🔍 Running lint check..."
+npm run lint || {
+  echo "❌ Linting failed. Fix the issues before pushing.";
   exit 1;
 }
 
-echo "🧪 Running tests..."
-npx jest --ci --runInBand --maxWorkers=2 || {
-  echo "❌ Tests failed. Fix them before pushing.";
+echo "🎨 Running Prettier..."
+npm run format || {
+  echo "❌ Prettier failed. Please fix formatting issues.";
   exit 1;
 }
 
-echo "✅ All checks passed. Push allowed!"
+echo "🧪 Running unit tests..."
+npm run test || {
+  echo "❌ Tests failed. Please fix them before pushing.";
+  exit 1;
+}
+
+echo "✅ All checks passed. Ready to push!"
