@@ -10,6 +10,7 @@ import InputField from '@components/ui/InputField';
 import Button from '@components/ui/Button';
 import Toast from '@components/ui/Toast';
 import { signupSchema, SignupFormData } from '@schemas/signup.schema';
+import { trackEvent } from '@utils/analytics';
 
 export default function SignupPage() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -23,6 +24,7 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (data: SignupFormData) => {
+    trackEvent('signup_button_click', { page: 'signup' });
     try {
       const response = await fetch('/api/signup', {
         method: 'POST',

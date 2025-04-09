@@ -12,6 +12,7 @@ import Button from '@components/ui/Button';
 import Toast from '@components/ui/Toast';
 import { useAuth } from '@context/AuthContext';
 import { loginSchema, LoginFormData } from '@schemas/login.schema';
+import { trackEvent } from '@utils/analytics';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    trackEvent('login_button_click', { page: 'login' });
     try {
       const response = await fetch('/api/login', {
         method: 'POST',

@@ -10,6 +10,7 @@ import InputField from '@components/ui/InputField';
 import Button from '@components/ui/Button';
 import Toast from '@components/ui/Toast';
 import { forgotPasswordSchema, ForgotPasswordData } from '@schemas/forgot-password.schema';
+import { trackEvent } from '@utils/analytics';
 
 export default function ForgotPasswordPage() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -23,6 +24,7 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: ForgotPasswordData) => {
+    trackEvent('reset_password_button_click', { page: 'forgot-password' });
     try {
       const response = await fetch('/api/forgot-password', {
         method: 'POST',
