@@ -1,15 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import AuthLayout from '@components/layouts/AuthLayout';
 import InputField from '@components/ui/InputField';
 import Button from '@components/ui/Button';
+import Toast from '@components/ui/Toast';
 import { signupSchema, SignupFormData } from '@schemas/signup.schema';
 
 export default function SignupPage() {
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -18,12 +22,32 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (data: SignupFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     console.log('Signup Data:', data);
+    try {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      const { message } = result;
+      if (response.ok) {
+        setToast({ type: 'success', message });
+      } else {
+        setToast({ type: 'error', message });
+      }
+    } catch (error) {
+      console.error('Signup Error:', error);
+    }
   };
 
   return (
     <AuthLayout title="Create an Account">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <InputField
           id="name"
