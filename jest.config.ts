@@ -13,6 +13,11 @@ const customJestConfig = {
     '!src/**/*.d.ts', // Keep ignoring type defs
     '!src/**/__tests__/**', // Skip test files
   ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/src/mocks/',
+    '<rootDir>/src/components/layouts/InitMSW.tsx',
+  ],
   coverageReporters: ['text', 'lcov', 'json', 'html'],
   moduleDirectories: ['node_modules', '<rootDir>/'],
   moduleNameMapper: {
