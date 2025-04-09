@@ -7,8 +7,11 @@
     "build": "cross-env NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --watch --coverage",
+    "test:ci": "jest --ci --runInBand --maxWorkers=2",
     "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "type-check": "tsc --noEmit",
     "prepare": "husky"
   },
   "lint-staged": {
