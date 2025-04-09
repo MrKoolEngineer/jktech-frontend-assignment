@@ -136,4 +136,44 @@ describe('Login Page - API Integration', () => {
       expect(mockReplace).toHaveBeenCalledWith('/');
     });
   });
+
+  it('should show failure toast on entering wrong login credentials', async () => {
+    jest.useFakeTimers();
+
+    // Mock fetch response
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ message: 'Invalid credentials' }),
+    });
+
+    render(
+      <AuthProvider>
+        <LoginPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'invalid@example.com' },
+    });
+
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'password' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /log in/i }));
+
+    // Assert toast is visible
+    const toast = await screen.findByText(/Invalid credentials/i);
+    expect(toast).toBeInTheDocument();
+
+    // Fast-forward time to auto-dismiss
+    jest.runAllTimers();
+
+    // Optionally, assert that it's removed after dismissal
+    await waitFor(() => {
+      expect(screen.queryByText(/Invalid credentials/i)).not.toBeInTheDocument();
+    });
+
+    jest.useRealTimers();
+  });
 });
