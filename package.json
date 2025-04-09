@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --coverage",
-    "test:ci": "jest --ci --runInBand --maxWorkers=2",
+    "test:ci": "jest --ci --maxWorkers=2",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "type-check": "tsc --noEmit",
