@@ -1,7 +1,17 @@
+import '@testing-library/jest-dom';
+import { useRouter } from 'next/navigation';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+
 import LoginPage from '../app/login/page';
 import { AuthProvider } from '@context/AuthContext';
-import '@testing-library/jest-dom';
+
+// Mock useRouter
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+}));
+
+// Mock fetch
+global.fetch = jest.fn();
 
 describe('Login Page', () => {
   const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
@@ -79,6 +89,51 @@ describe('Login Page', () => {
         password: 'password123',
         remember: false,
       });
+    });
+  });
+});
+
+describe('Login Page - API Integration', () => {
+  it('should submit form and call login + redirect on success', async () => {
+    const mockLogin = jest.fn();
+    const mockReplace = jest.fn();
+
+    // Mock router
+    (useRouter as jest.Mock).mockReturnValue({
+      replace: mockReplace,
+    });
+
+    // Mock fetch response
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        user: {
+          username: 'Test User',
+          role: 'agent',
+        },
+        token: '123abc',
+      }),
+    });
+
+    render(
+      <AuthProvider>
+        <LoginPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'password' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /log in/i }));
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith('/api/login', expect.any(Object));
+      expect(mockReplace).toHaveBeenCalledWith('/');
     });
   });
 });
