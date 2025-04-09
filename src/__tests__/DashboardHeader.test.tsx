@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import DashboardHeader from '@components/ui/DashboardHeader';
-import { useRouter } from 'next/navigation';
 
 jest.mock('@context/AuthContext', () => ({
   useAuth: () => ({

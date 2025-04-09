@@ -3,11 +3,23 @@ import Home from '../app/page';
 import { useRouter } from 'next/navigation';
 
 // Mocks for Spinner, Header, AdminControls
-jest.mock('@components/ui/Spinner', () => () => <div>Loading spinner...</div>);
-jest.mock('@components/ui/DashboardHeader', () => () => <div>Dashboard Header</div>);
-jest.mock('@components/ui/AdminControls', () => () => (
-  <button data-testid="manage-users-btn">Manage Users</button>
-));
+jest.mock('@components/ui/Spinner', () => {
+  const MockSpinner = () => <div>Loading spinner...</div>;
+  MockSpinner.displayName = 'MockSpinner';
+  return MockSpinner;
+});
+
+jest.mock('@components/ui/DashboardHeader', () => {
+  const MockDashboardHeader = () => <div>Dashboard Header</div>;
+  MockDashboardHeader.displayName = 'MockDashboardHeader';
+  return MockDashboardHeader;
+});
+
+jest.mock('@components/ui/AdminControls', () => {
+  const MockAdminControls = () => <button data-testid="manage-users-btn">Manage Users</button>;
+  MockAdminControls.displayName = 'MockAdminControls';
+  return MockAdminControls;
+});
 
 // Router mock
 const mockReplace = jest.fn();

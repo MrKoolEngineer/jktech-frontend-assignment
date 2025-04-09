@@ -7,7 +7,11 @@ jest.mock('@context/AuthContext', () => ({
   ),
 }));
 
-jest.mock('@components/layouts/InitMSW', () => () => <div data-testid="init-msw" />);
+jest.mock('@components/layouts/InitMSW', () => {
+  const MockInitMSW = () => <div data-testid="init-msw" />;
+  MockInitMSW.displayName = 'MockInitMSW';
+  return MockInitMSW;
+});
 
 describe('RootLayout', () => {
   it('renders children and includes AuthProvider and InitMSW', () => {

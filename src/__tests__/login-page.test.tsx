@@ -70,7 +70,6 @@ describe('Login Page', () => {
 
 describe('Login Page - API Integration', () => {
   it('should submit form and call login + redirect on success', async () => {
-    const mockLogin = jest.fn();
     const mockReplace = jest.fn();
 
     // Mock router
