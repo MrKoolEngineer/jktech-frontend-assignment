@@ -21,7 +21,28 @@ export const handlers = [
 
     // Add mock logic here
     if (email === 'test@example.com' && password === 'password') {
-      return HttpResponse.json({ username: 'Test User', token: '123abc' });
+      return HttpResponse.json(
+        {
+          user: {
+            username: 'Test User',
+            role: 'agent',
+            token: '123abc',
+          },
+        },
+        { status: 200 }
+      );
+    }
+    if (email === 'admin@example.com' && password === 'admin123') {
+      return HttpResponse.json(
+        {
+          user: {
+            username: 'Admin User',
+            role: 'admin',
+            token: '456def',
+          },
+        },
+        { status: 200 }
+      );
     }
     return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 });
   }),

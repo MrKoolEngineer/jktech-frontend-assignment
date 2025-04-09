@@ -1,13 +1,31 @@
 'use client';
-import { useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Spinner from '@components/ui/Spinner';
+import DashboardHeader from '@components/ui/DashboardHeader';
+import { useAuth } from '@context/AuthContext';
 
 export default function Home() {
   const router = useRouter();
+  const { user } = useAuth();
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    router.replace('/login');
-  }, [router]);
+    if (!user?.username) {
+      router.replace('/login');
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [router, user]);
 
-  return null; // or a loading spinner
+  if (checkingAuth) {
+    return <Spinner />;
+  }
+
+  return (
+    <>
+      <DashboardHeader />
+    </>
+  );
 }
