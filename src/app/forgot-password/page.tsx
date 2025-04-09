@@ -41,7 +41,8 @@ export default function ForgotPasswordPage() {
         setToast({ type: 'error', message });
       }
     } catch (error) {
-      console.error('Signup Error:', error);
+      console.error('Forgot Password Error:', error);
+      setToast({ type: 'error', message: 'Something went wrong. Please try again later.' });
     }
   };
 
