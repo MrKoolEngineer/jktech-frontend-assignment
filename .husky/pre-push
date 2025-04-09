@@ -1,5 +1,4 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
 
 # Get staged files
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|ts|tsx)$')
@@ -16,7 +15,7 @@ npx eslint $STAGED_FILES || {
 }
 
 echo "🧪 Running tests..."
-npm run test || {
+npx jest --ci --runInBand --maxWorkers=2 || {
   echo "❌ Tests failed. Fix them before pushing.";
   exit 1;
 }
