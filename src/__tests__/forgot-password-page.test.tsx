@@ -83,30 +83,6 @@ describe('Forgot Password Page - Validation', () => {
     });
   });
 
-  it('submits the form and logs the email', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-    render(
-      <AuthProvider>
-        <ForgotPasswordPage />
-      </AuthProvider>
-    );
-
-    const emailInput = screen.getByLabelText(/email/i);
-    const submitButton = screen.getByRole('button', { name: /reset password/i });
-
-    fireEvent.input(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalledWith('Forgot Password Request:', {
-        email: 'test@example.com',
-      });
-    });
-
-    consoleLogSpy.mockRestore();
-  });
-
   it('should submit the forgot password form with valid email', async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({

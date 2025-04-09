@@ -23,7 +23,6 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: ForgotPasswordData) => {
-    console.log('Forgot Password Request:', data);
     try {
       const response = await fetch('/api/forgot-password', {
         method: 'POST',

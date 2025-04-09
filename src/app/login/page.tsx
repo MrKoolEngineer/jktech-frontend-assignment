@@ -27,7 +27,6 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log('Login form data:', data);
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
@@ -43,6 +42,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error('Login error:', error);
+      setToast({ type: 'error', message: 'Something went wrong. Please try again later.' });
     }
   };
 

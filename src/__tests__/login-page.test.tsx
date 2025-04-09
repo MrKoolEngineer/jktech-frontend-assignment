@@ -14,18 +14,12 @@ jest.mock('next/navigation', () => ({
 global.fetch = jest.fn();
 
 describe('Login Page', () => {
-  const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-
   beforeEach(() => {
     render(
       <AuthProvider>
         <LoginPage />
       </AuthProvider>
     );
-  });
-
-  afterEach(() => {
-    consoleLogSpy.mockClear();
   });
 
   it('should render email and password input fields', () => {
@@ -70,25 +64,6 @@ describe('Login Page', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/password must be under 128 characters/i)).toBeInTheDocument();
-    });
-  });
-
-  it('should submit form with valid data', async () => {
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'test@example.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'password123' },
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: /log in/i }));
-
-    await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalledWith('Login form data:', {
-        email: 'test@example.com',
-        password: 'password123',
-        remember: false,
-      });
     });
   });
 });
@@ -175,5 +150,33 @@ describe('Login Page - API Integration', () => {
     });
 
     jest.useRealTimers();
+  });
+
+  it('should show generic error toast when login request fails', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    // Force fetch to throw an error
+    (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+
+    render(
+      <AuthProvider>
+        <LoginPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /log in/i }));
+
+    const toast = await screen.findByText(/something went wrong/i);
+    expect(toast).toBeInTheDocument();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Login error:', expect.any(Error));
+    consoleErrorSpy.mockRestore();
   });
 });
