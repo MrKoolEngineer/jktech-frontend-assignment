@@ -1,4 +1,8 @@
-export const trackEvent = (event: string, payload: any) => {
+type TrackEventPayload = {
+  page: string;
+};
+
+export const trackEvent = (event: string, payload: TrackEventPayload) => {
   if (process.env.NODE_ENV === 'production') {
     console.log('[Tracking Event]', event, payload); // replace with actual send logic
   }
