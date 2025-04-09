@@ -1,15 +1,19 @@
 'use client';
 
+import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 
 import AuthLayout from '@components/layouts/AuthLayout';
 import InputField from '@components/ui/InputField';
 import Button from '@components/ui/Button';
+import Toast from '@components/ui/Toast';
 import { forgotPasswordSchema, ForgotPasswordData } from '@schemas/forgot-password.schema';
 
 export default function ForgotPasswordPage() {
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -18,12 +22,32 @@ export default function ForgotPasswordPage() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const onSubmit = (data: ForgotPasswordData) => {
+  const onSubmit = async (data: ForgotPasswordData) => {
     console.log('Forgot Password Request:', data);
+    try {
+      const response = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      const { message } = result;
+      if (response.ok) {
+        setToast({ type: 'success', message });
+      } else {
+        setToast({ type: 'error', message });
+      }
+    } catch (error) {
+      console.error('Signup Error:', error);
+    }
   };
 
   return (
     <AuthLayout title="Forgot Password">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <InputField
           id="email"
