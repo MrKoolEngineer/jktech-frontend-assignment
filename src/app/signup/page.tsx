@@ -42,6 +42,7 @@ export default function SignupPage() {
       }
     } catch (error) {
       console.error('Signup Error:', error);
+      setToast({ type: 'error', message: 'Something went wrong. Please try again later.' });
     }
   };
 

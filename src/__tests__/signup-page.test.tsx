@@ -1,7 +1,15 @@
-import { render, screen, fireEvent, waitFor, getByLabelText } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SignupPage from '../app/signup/page';
 import { AuthProvider } from '@context/AuthContext';
 import '@testing-library/jest-dom';
+
+// Mock the fetch API
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({ message: 'Signup successful' }),
+  })
+) as jest.Mock;
 
 describe('Signup Page', () => {
   it('should render name, email, password, and confirm password input fields', () => {
@@ -175,5 +183,102 @@ describe('Signup Page - Validation', () => {
     });
 
     consoleLogSpy.mockRestore();
+  });
+});
+
+describe('Signup Page - Integration', () => {
+  it('should submit form with valid data and show success toast', async () => {
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/name/i), {
+      target: { value: 'Test User' },
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/^password$/i), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/signup successful/i)).toBeInTheDocument();
+    });
+  });
+
+  it('should show error toast when API responds with an error', async () => {
+    const mockErrorResponse = {
+      message: 'Email already in use',
+    };
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve(mockErrorResponse),
+      })
+    ) as jest.Mock;
+
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/name/i), {
+      target: { value: 'Error User' },
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'error@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/^password$/i), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/email already in use/i)).toBeInTheDocument();
+    });
+  });
+
+  it('should show error toast when API call fails (catch block)', async () => {
+    // Force fetch to throw an error
+    global.fetch = jest.fn(() => Promise.reject(new Error('Network error'))) as jest.Mock;
+
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/name/i), {
+      target: { value: 'Error User' },
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'error@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/^password$/i), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument(); // Adjust this based on your toast message
+    });
   });
 });
