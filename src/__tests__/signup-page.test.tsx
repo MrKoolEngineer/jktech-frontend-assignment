@@ -281,4 +281,39 @@ describe('Signup Page - Integration', () => {
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument(); // Adjust this based on your toast message
     });
   });
+
+  it('should show success toast on successful signup and auto-dismiss', async () => {
+    jest.useFakeTimers();
+
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ message: 'Signup successful' }),
+    });
+
+    render(
+      <AuthProvider>
+        <SignupPage />
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+    const toast = await screen.findByText(/signup successful/i);
+    expect(toast).toBeInTheDocument();
+
+    jest.runAllTimers();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/signup successful/i)).not.toBeInTheDocument();
+    });
+
+    jest.useRealTimers();
+  });
 });
